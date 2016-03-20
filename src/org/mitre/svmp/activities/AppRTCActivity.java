@@ -92,6 +92,7 @@ public class AppRTCActivity extends Activity implements StateObserver, MessageHa
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         // lock the application to the natural "up" orientation of the physical device
         //noinspection MagicConstant
         setRequestedOrientation(getDeviceDefaultOrientation());
@@ -126,6 +127,14 @@ public class AppRTCActivity extends Activity implements StateObserver, MessageHa
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
+        /*
+         * Hide navigation bar
+         */
+        View decorView = getWindow().getDecorView();
+        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+        decorView.setSystemUiVisibility(uiOptions);
     }
 
     // returns what value we should request for screen orientation, either portrait or landscape

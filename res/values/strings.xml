@@ -15,7 +15,7 @@
   limitations under the License.
   -->
 <resources>
-    <string name="app_name">SVMP Client</string>
+    <string name="app_name">Virtual Smartphone</string>
     <string name="error">Error</string>
     <string name="errorCamera">Camera Error</string>
     <string name="codectype_prompt">Choose a codec type</string>
@@ -56,7 +56,7 @@
     <string name="opengl">OpenGL</string>
 
     <!-- ConnectionList layout resources -->
-    <string name="connectionList_title">SVMP Connections</string>
+    <string name="connectionList_title">Virtual Smart Phones</string>
     <string name="connectionList_button_new_text">New</string>
     <string name="connectionList_button_exit_text">Exit</string>
     <string name="connectionList_context_connectToDesktop_text">Connect to desktop</string>

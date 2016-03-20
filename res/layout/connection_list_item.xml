@@ -42,13 +42,20 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/connectionListItem_text1"
                 android:textSize="@dimen/textSize_medium"
+                android:paddingBottom="12dip"
+                android:paddingTop="12dip"
+                android:textColor="#000000"
+                android:textStyle="bold"
                 android:singleLine="true"/>
         <TextView
                 android:id="@+id/connectionListItem_text2"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 android:singleLine="true"
                 android:ellipsize="marquee"
+                android:textColor="#000000"
+                android:textStyle="bold"
                 android:paddingBottom="6dip"/>
     </LinearLayout>
     <Button

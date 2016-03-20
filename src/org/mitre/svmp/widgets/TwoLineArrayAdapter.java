@@ -80,8 +80,8 @@ public abstract class TwoLineArrayAdapter<T> extends ArrayAdapter<T> {
             lineOneView.setTextColor(Color.GREEN);
             lineTwoView.setTextColor(Color.GREEN);
         } else {
-            lineOneView.setTextColor(Color.LTGRAY);
-            lineTwoView.setTextColor(Color.LTGRAY);
+            lineOneView.setTextColor(Color.BLACK);
+            lineTwoView.setTextColor(Color.BLACK);
         }
 
         ImageView lockImageView = (ImageView)listItemView.findViewById(
