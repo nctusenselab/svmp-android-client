@@ -39,6 +39,7 @@ public class IntentHandler {
                 int telephonyEnabled = isTelephonyEnabled(context);
                 if (telephonyEnabled == 0) {
                     Intent call = new Intent(Intent.ACTION_CALL);
+                    call.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); 
                     call.setData(Uri.parse(intent.getData()));
                     context.startActivity(call);
                 }
