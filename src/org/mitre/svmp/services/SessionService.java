@@ -66,6 +66,10 @@ public class SessionService extends Service implements StateObserver, MessageHan
     public static boolean isRunningForConn(int connectionID) {
         return getConnectionID() == connectionID && getState() != StateMachine.STATE.NEW;
     }
+    public static void sendMessageStatic(SVMPProtocol.Request request) {
+      if (service != null && service.connectionInfo != null)
+        service.sendMessage(request);
+    }
 
     // local variables
     private AppRTCClient binder; // Binder given to clients

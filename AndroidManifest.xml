@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="org.mitre.svmp.client"
-          android:versionCode="11"
+          android:versionCode="14"
           android:versionName="2.0.0">
 
     <uses-sdk android:minSdkVersion="13" android:targetSdkVersion="19"/>
@@ -76,7 +76,7 @@
 
         <!-- Background service -->
         <service android:name="org.mitre.svmp.services.SessionService"/>
-        
+
         <!-- Memorizing Trust Manager library integration -->
         <activity android:name="de.duenndns.ssl.MemorizingActivity" />
 

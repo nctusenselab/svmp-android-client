@@ -24,25 +24,38 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 
+import android.content.Intent;
+import org.mitre.svmp.services.SessionService;
+import org.mitre.svmp.activities.ConnectionList;
+import android.os.Handler;
+
 public class SendNetIntent extends Activity
 {
 	private static final String TAG = "SendNetIntent";
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+		final Handler handler = new Handler();
+
 		//Put together the Intent protobuffer.
 		Log.i(TAG,"GOING TO SEND URL INTENT with URL: "+getIntent().getDataString());
-		SVMPProtocol.Request.Builder msg = SVMPProtocol.Request.newBuilder();
-		SVMPProtocol.Intent.Builder intentProtoBuffer = SVMPProtocol.Intent.newBuilder();			
+		final SVMPProtocol.Request.Builder msg = SVMPProtocol.Request.newBuilder();
+		SVMPProtocol.Intent.Builder intentProtoBuffer = SVMPProtocol.Intent.newBuilder();
 		intentProtoBuffer.setAction(IntentAction.ACTION_VIEW);
 		intentProtoBuffer.setData(getIntent().getDataString());
-			
+
 		//Set the Request message params and send it off.
 		msg.setType(RequestType.INTENT);
 		msg.setIntent(intentProtoBuffer.build());
 //		RemoteServerClient.sendMessage(msg.build());
-		
+
+		Intent intent = new Intent();
+		intent.setClass(this, ConnectionList.class);
+		intent.putExtra("connectionID", SessionService.getConnectionID());
+		startActivity(intent);
+
+    SessionService.sendMessageStatic(msg.build());
+
 		finish();
 	}
 }
