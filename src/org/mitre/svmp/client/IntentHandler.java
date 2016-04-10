@@ -49,6 +49,11 @@ public class IntentHandler {
                 }
                 break;
             case ACTION_VIEW:
+                Log.d(TAG, String.format("Received 'view' Intent for uri '%s'", intent.getData()));
+                Intent view = new Intent(Intent.ACTION_VIEW);
+                view.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                view.setData(Uri.parse(intent.getData()));
+                context.startActivity(view);
                 break;
             default:
                 break;
