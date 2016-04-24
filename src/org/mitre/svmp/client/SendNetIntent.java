@@ -29,6 +29,12 @@ import org.mitre.svmp.services.SessionService;
 import org.mitre.svmp.activities.ConnectionList;
 import android.os.Handler;
 
+// file forwarding
+import android.net.Uri;
+import com.google.protobuf.ByteString;
+import java.io.InputStream;
+import java.io.ByteArrayOutputStream;
+
 public class SendNetIntent extends Activity
 {
 	private static final String TAG = "SendNetIntent";
@@ -46,6 +52,11 @@ public class SendNetIntent extends Activity
 
 		//Set the Request message params and send it off.
 		msg.setType(RequestType.INTENT);
+
+		if(getIntent().getDataString().endsWith(".pdf")) { // handle file forwarding
+
+		}
+
 		msg.setIntent(intentProtoBuffer.build());
 //		RemoteServerClient.sendMessage(msg.build());
 
@@ -58,4 +69,24 @@ public class SendNetIntent extends Activity
 
 		finish();
 	}
+
+	private ByteString getByteString(Uri uri) {
+		try {
+			InputStream iStream = getContentResolver().openInputStream(uri);
+			byte[] inputData = getBytes(iStream);
+			return ByteString.copyFrom(inputData);
+		} catch(Exception e) {}
+		return null;
+	}
+	private byte[] getBytes(InputStream inputStream) throws Exception {
+    ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+    int bufferSize = 1024;
+    byte[] buffer = new byte[bufferSize];
+
+    int len = 0;
+    while ((len = inputStream.read(buffer)) != -1) {
+      byteBuffer.write(buffer, 0, len);
+    }
+    return byteBuffer.toByteArray();
+  }
 }
