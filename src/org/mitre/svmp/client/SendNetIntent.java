@@ -68,7 +68,7 @@ public class SendNetIntent extends Activity
 		intent.putExtra("connectionID", SessionService.getConnectionID());
 		startActivity(intent);
 
-    SessionService.sendMessageStatic(msg.build());
+    	SessionService.sendMessageStatic(msg.build());
 
 		finish();
 	}

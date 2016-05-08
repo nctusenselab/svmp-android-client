@@ -24,6 +24,11 @@ import android.util.Log;
 import android.widget.Toast;
 import org.mitre.svmp.protocol.SVMPProtocol;
 
+import com.google.protobuf.ByteString;
+import java.io.FileOutputStream;
+import java.io.File;
+import android.webkit.MimeTypeMap;
+
 /**
  * @author Joe Portner
  * Receives Intents from the server to act upon on the client-side
@@ -39,7 +44,7 @@ public class IntentHandler {
                 int telephonyEnabled = isTelephonyEnabled(context);
                 if (telephonyEnabled == 0) {
                     Intent call = new Intent(Intent.ACTION_CALL);
-                    call.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); 
+                    call.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     call.setData(Uri.parse(intent.getData()));
                     context.startActivity(call);
                 }
@@ -53,7 +58,16 @@ public class IntentHandler {
                 Log.d(TAG, String.format("Received 'view' Intent for uri '%s'", intent.getData()));
                 Intent view = new Intent(Intent.ACTION_VIEW);
                 view.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                view.setData(Uri.parse(intent.getData()));
+                if(intent.hasFile()) {
+                    SVMPProtocol.Intent.File f = intent.getFile();
+					Log.e(TAG, "Receiving a file with filename: " + f.getFilename());
+					saveToFile(f);
+					File savedFile = new File("/sdcard/" + f.getFilename());
+					view.setDataAndType(Uri.fromFile(savedFile), "application/pdf");
+                } else {
+                    view.setData(Uri.parse(intent.getData()));
+                }
+
                 context.startActivity(view);
                 break;
             default:
@@ -61,6 +75,15 @@ public class IntentHandler {
         }
     }
 
+    protected static void saveToFile(SVMPProtocol.Intent.File f) {
+		try {
+			ByteString bs = f.getData();
+			byte[] arr = bs.toByteArray();
+			FileOutputStream out = new FileOutputStream("/sdcard/" + f.getFilename());
+			out.write(arr);
+			out.close();
+		} catch(Exception e) {}
+	}
     // returns an error message if telephony is not enabled
     private static int isTelephonyEnabled(Context context){
         int resId = 0;
