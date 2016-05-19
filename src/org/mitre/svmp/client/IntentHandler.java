@@ -59,7 +59,7 @@ public class IntentHandler {
                 Intent view = new Intent(Intent.ACTION_VIEW);
                 view.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 if(intent.hasFile()) {
-                    SVMPProtocol.Intent.File f = intent.getFile();
+                    SVMPProtocol.File f = intent.getFile();
 					Log.e(TAG, "Receiving a file with filename: " + f.getFilename());
 					saveToFile(f);
 					File savedFile = new File("/sdcard/" + f.getFilename());
@@ -75,7 +75,7 @@ public class IntentHandler {
         }
     }
 
-    protected static void saveToFile(SVMPProtocol.Intent.File f) {
+    protected static void saveToFile(SVMPProtocol.File f) {
 		try {
 			ByteString bs = f.getData();
 			byte[] arr = bs.toByteArray();

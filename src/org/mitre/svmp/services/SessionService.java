@@ -322,6 +322,9 @@ public class SessionService extends Service implements StateObserver, MessageHan
             case APPS:
                 consumed = false; // pass this message on to the activity message handler
                 break;
+            case FILE:
+                FileHandler.inspect(data, SessionService.this);
+                break;
             default:
                 Log.e(TAG, "Unexpected protocol message of type " + data.getType().name());
         }
