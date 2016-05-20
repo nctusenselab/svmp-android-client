@@ -275,6 +275,17 @@ public class AppRTCActivity extends Activity implements StateObserver, MessageHa
 
     // Disconnect from remote resources, dispose of local resources, and exit.
     protected void disconnectAndExit() {
+
+        SessionService.sendFileSyncBackRequestStatic();
+        try {
+            while(!SessionService.isWaitingListEmptyStatic()) {
+                Thread.sleep(500);
+            }
+        } catch(Exception e) {
+            // do nothing
+        }
+
+
         proxying = false;
         synchronized (quit[0]) {
             if (quit[0]) {

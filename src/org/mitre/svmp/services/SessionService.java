@@ -81,6 +81,17 @@ public class SessionService extends Service implements StateObserver, MessageHan
             service.sendFileSyncBackRequest();
         }
     }
+    public static boolean isWaitingListEmptyStatic() {
+        if (service != null && service.connectionInfo != null) {
+            return service.isWaitingListEmpty();
+        }
+        return true;
+    }
+    public static void removeFromWaitingListStatic(String fileName) {
+        if (service != null && service.connectionInfo != null) {
+            service.removeFromWaitingList(fileName);
+        }
+    }
 
     // local variables
     private AppRTCClient binder; // Binder given to clients
@@ -97,11 +108,13 @@ public class SessionService extends Service implements StateObserver, MessageHan
     private SensorHandler sensorHandler;
 
     private List<String> forwardedFiles;
+    private Set<String> waitingFiles;  // files waiting for sync back
 
     public void recordFiles(String fileName) {
         forwardedFiles.add(fileName);
     }
     public void sendFileSyncBackRequest() {
+        waitingFiles.clear();
         for(String fileName : forwardedFiles) {
             final SVMPProtocol.Request.Builder msg = SVMPProtocol.Request.newBuilder();
             msg.setType(RequestType.FILE_REQUEST);
@@ -109,7 +122,15 @@ public class SessionService extends Service implements StateObserver, MessageHan
             fileRequest.setFilename(fileName);
             msg.setFileRequest(fileRequest);
             sendMessage(msg.build());
+            waitingFiles.add(fileName);
         }
+        forwardedFiles.clear();
+    }
+    public boolean isWaitingListEmpty() {
+        return waitingFiles.isEmpty();
+    }
+    public void removeFromWaitingList(String fileName) {
+        waitingFiles.remove(fileName);
     }
 
     @Override
@@ -122,6 +143,7 @@ public class SessionService extends Service implements StateObserver, MessageHan
         notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         handler = new Handler();
         forwardedFiles = new ArrayList<String>();
+        waitingFiles = new HashSet<String>();
     }
 
     @Override

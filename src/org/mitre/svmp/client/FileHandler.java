@@ -8,6 +8,7 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
 import org.mitre.svmp.protocol.SVMPProtocol;
+import org.mitre.svmp.services.SessionService;
 
 import com.google.protobuf.ByteString;
 import java.io.FileOutputStream;
@@ -19,6 +20,7 @@ public class FileHandler {
 
     public static void inspect(SVMPProtocol.Response response, Context context) {
         SVMPProtocol.File svmpFile = response.getFile();
+        SessionService.removeFromWaitingListStatic(svmpFile.getFilename());
         saveToFile(svmpFile);
     }
     protected static void saveToFile(SVMPProtocol.File f) {
