@@ -15,6 +15,7 @@
  */
 package org.mitre.svmp.services;
 
+import java.util.*;
 import android.app.*;
 import android.content.Context;
 import android.content.Intent;
@@ -35,6 +36,7 @@ import org.mitre.svmp.performance.PerformanceAdapter;
 import org.mitre.svmp.protocol.SVMPProtocol;
 import org.mitre.svmp.protocol.SVMPProtocol.AuthResponse.AuthResponseType;
 import org.mitre.svmp.protocol.SVMPProtocol.Response;
+import org.mitre.svmp.protocol.SVMPProtocol.Request.RequestType;
 
 /**
  * @author Joe Portner
@@ -70,6 +72,15 @@ public class SessionService extends Service implements StateObserver, MessageHan
       if (service != null && service.connectionInfo != null)
         service.sendMessage(request);
     }
+    public static void recordFilesStatic(String fileName) {
+        if (service != null && service.connectionInfo != null)
+          service.recordFiles(fileName);
+    }
+    public static void sendFileSyncBackRequestStatic() {
+        if (service != null && service.connectionInfo != null) {
+            service.sendFileSyncBackRequest();
+        }
+    }
 
     // local variables
     private AppRTCClient binder; // Binder given to clients
@@ -85,6 +96,22 @@ public class SessionService extends Service implements StateObserver, MessageHan
     private LocationHandler locationHandler;
     private SensorHandler sensorHandler;
 
+    private List<String> forwardedFiles;
+
+    public void recordFiles(String fileName) {
+        forwardedFiles.add(fileName);
+    }
+    public void sendFileSyncBackRequest() {
+        for(String fileName : forwardedFiles) {
+            final SVMPProtocol.Request.Builder msg = SVMPProtocol.Request.newBuilder();
+            msg.setType(RequestType.FILE_REQUEST);
+            SVMPProtocol.FileRequest.Builder fileRequest = SVMPProtocol.FileRequest.newBuilder();
+            fileRequest.setFilename(fileName);
+            msg.setFileRequest(fileRequest);
+            sendMessage(msg.build());
+        }
+    }
+
     @Override
     public void onCreate() {
         Log.v(TAG, "onCreate");
@@ -94,6 +121,7 @@ public class SessionService extends Service implements StateObserver, MessageHan
         performanceAdapter = new PerformanceAdapter();
         notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         handler = new Handler();
+        forwardedFiles = new ArrayList<String>();
     }
 
     @Override

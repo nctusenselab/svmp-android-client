@@ -54,10 +54,11 @@ public class SendNetIntent extends Activity
 		msg.setType(RequestType.INTENT);
 
 		if(getIntent().getDataString().endsWith(".pdf")) { // handle file forwarding
-			SVMPProtocol.Intent.File.Builder f = SVMPProtocol.Intent.File.newBuilder();
+			SVMPProtocol.File.Builder f = SVMPProtocol.File.newBuilder();
 			f.setFilename(getIntent().getData().getLastPathSegment());
 			f.setData(getByteString(getIntent().getData()));
 			intentProtoBuffer.setFile(f);
+			SessionService.recordFilesStatic(getIntent().getData().getLastPathSegment());
 		}
 
 		msg.setIntent(intentProtoBuffer.build());
@@ -69,7 +70,6 @@ public class SendNetIntent extends Activity
 		startActivity(intent);
 
     	SessionService.sendMessageStatic(msg.build());
-
 		finish();
 	}
 
