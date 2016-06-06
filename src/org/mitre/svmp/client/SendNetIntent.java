@@ -35,6 +35,9 @@ import com.google.protobuf.ByteString;
 import java.io.InputStream;
 import java.io.ByteArrayOutputStream;
 
+import java.util.Date;
+import java.text.SimpleDateFormat;
+
 public class SendNetIntent extends Activity
 {
 	private static final String TAG = "SendNetIntent";
@@ -68,6 +71,9 @@ public class SendNetIntent extends Activity
 		intent.setClass(this, ConnectionList.class);
 		intent.putExtra("connectionID", SessionService.getConnectionID());
 		startActivity(intent);
+
+		String timeStamp = new SimpleDateFormat("HH.mm.ss.SS").format(new Date());
+		Log.i(TAG, "Forwarding intent. Timestamp: " + timeStamp + " " + System.currentTimeMillis());
 
     	SessionService.sendMessageStatic(msg.build());
 		finish();

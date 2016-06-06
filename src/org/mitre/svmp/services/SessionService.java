@@ -107,7 +107,7 @@ public class SessionService extends Service implements StateObserver, MessageHan
     private LocationHandler locationHandler;
     private SensorHandler sensorHandler;
 
-    private List<String> forwardedFiles;
+    private List<String> forwardedFiles; // files which have been forwarded
     private Set<String> waitingFiles;  // files waiting for sync back
 
     public void recordFiles(String fileName) {
