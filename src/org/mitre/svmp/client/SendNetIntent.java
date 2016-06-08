@@ -56,7 +56,7 @@ public class SendNetIntent extends Activity
 		//Set the Request message params and send it off.
 		msg.setType(RequestType.INTENT);
 
-		if(getIntent().getDataString().endsWith(".pdf")) { // handle file forwarding
+		if(getIntent().getData().getScheme().equals("file")) { // handle file forwarding
 			SVMPProtocol.File.Builder f = SVMPProtocol.File.newBuilder();
 			f.setFilename(getIntent().getData().getLastPathSegment());
 			f.setData(getByteString(getIntent().getData()));
