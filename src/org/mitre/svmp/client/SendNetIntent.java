@@ -46,6 +46,16 @@ public class SendNetIntent extends Activity
 		super.onCreate(savedInstanceState);
 		final Handler handler = new Handler();
 
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				forwardIntent();
+			}
+		}).start();
+		finish();
+	}
+
+	private void forwardIntent() {
 		//Put together the Intent protobuffer.
 		Log.i(TAG,"GOING TO SEND URL INTENT with URL: "+getIntent().getDataString());
 		final SVMPProtocol.Request.Builder msg = SVMPProtocol.Request.newBuilder();
@@ -76,7 +86,6 @@ public class SendNetIntent extends Activity
 		Log.i(TAG, "Forwarding intent. Timestamp: " + timeStamp + " " + System.currentTimeMillis());
 
     	SessionService.sendMessageStatic(msg.build());
-		finish();
 	}
 
 	private ByteString getByteString(Uri uri) {

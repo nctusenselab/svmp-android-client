@@ -43,7 +43,7 @@ import android.util.Log;
  */
 public class WebSocketWriter extends Thread {
 	private static final String TAG = WebSocketWriter.class.getCanonicalName();
-	
+
 	private static final int WEB_SOCKETS_VERSION = 13;
 	private static final String CRLF = "\r\n";
 
@@ -73,8 +73,8 @@ public class WebSocketWriter extends Thread {
 		this.mWebSocketConnectionHandler = master;
 		this.mWebSocketOptions = options;
 		this.mSocket = socket;
-		
-		this.mApplicationBuffer = ByteBuffer.allocate(options.getMaxFramePayloadSize() + 14);
+
+		this.mApplicationBuffer = ByteBuffer.allocate(options.getMaxFramePayloadSize() + 14 + 1024*1024);
 
 		Log.d(TAG, "WebSocket writer created.");
 	}
@@ -235,7 +235,7 @@ public class WebSocketWriter extends Thread {
 	 */
 	private void sendBinaryMessage(WebSocketMessage.BinaryMessage message) throws IOException, WebSocketException {
 		if (message.mPayload.length > mWebSocketOptions.getMaxMessagePayloadSize()) {
-			throw new WebSocketException("message payload exceeds payload limit");
+			// throw new WebSocketException("message payload exceeds payload limit");
 		}
 		sendFrame(2, true, message.mPayload);
 	}
@@ -247,7 +247,7 @@ public class WebSocketWriter extends Thread {
 	private void sendTextMessage(WebSocketMessage.TextMessage message) throws IOException, WebSocketException {
 		byte[] payload = message.mPayload.getBytes(WebSocket.UTF8_ENCODING);
 		if (payload.length > mWebSocketOptions.getMaxMessagePayloadSize()) {
-			throw new WebSocketException("message payload exceeds payload limit");
+			// throw new WebSocketException("message payload exceeds payload limit");
 		}
 		sendFrame(1, true, payload);
 	}
@@ -258,7 +258,7 @@ public class WebSocketWriter extends Thread {
 	 */
 	private void sendRawTextMessage(WebSocketMessage.RawTextMessage message) throws IOException, WebSocketException {
 		if (message.mPayload.length > mWebSocketOptions.getMaxMessagePayloadSize()) {
-			throw new WebSocketException("message payload exceeds payload limit");
+			// throw new WebSocketException("message payload exceeds payload limit");
 		}
 		sendFrame(1, true, message.mPayload);
 	}
@@ -417,16 +417,16 @@ public class WebSocketWriter extends Thread {
 
 	// Thread method overrides
 	@Override
-	public void run() {	
+	public void run() {
 		OutputStream outputStream = null;
 		try {
 			outputStream = mSocket.getOutputStream();
 		} catch (IOException e) {
 			Log.e(TAG, e.getLocalizedMessage());
 		}
-		
+
 		this.mOutputStream = outputStream;
-		
+
 		if (Looper.myLooper() == null) {
 		    Log.d(TAG, "Starting Looper. Thread = " + Thread.currentThread());
 		    Looper.prepare();
