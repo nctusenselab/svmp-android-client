@@ -74,7 +74,7 @@ public class WebSocketWriter extends Thread {
 		this.mWebSocketOptions = options;
 		this.mSocket = socket;
 
-		this.mApplicationBuffer = ByteBuffer.allocate(options.getMaxFramePayloadSize() + 14 + 1024*1024);
+		this.mApplicationBuffer = ByteBuffer.allocate(options.getMaxFramePayloadSize() + 14 + 100*1024*1024);
 
 		Log.d(TAG, "WebSocket writer created.");
 	}
