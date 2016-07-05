@@ -60,19 +60,33 @@ public class SendNetIntent extends Activity
 		Log.i(TAG,"GOING TO SEND URL INTENT with URL: "+getIntent().getDataString());
 		final SVMPProtocol.Request.Builder msg = SVMPProtocol.Request.newBuilder();
 		SVMPProtocol.Intent.Builder intentProtoBuffer = SVMPProtocol.Intent.newBuilder();
-		intentProtoBuffer.setAction(IntentAction.ACTION_VIEW);
-		intentProtoBuffer.setData(getIntent().getDataString());
+
+		Intent it = getIntent();
+		if(it.getAction().equals(Intent.ACTION_VIEW)) {
+			intentProtoBuffer.setAction(IntentAction.ACTION_VIEW);
+			intentProtoBuffer.setData(getIntent().getDataString());
+			if(getIntent().getData().getScheme().equals("file")) { // handle file forwarding
+				SVMPProtocol.File.Builder f = SVMPProtocol.File.newBuilder();
+				f.setFilename(getIntent().getData().getLastPathSegment());
+				f.setData(getByteString(getIntent().getData()));
+				intentProtoBuffer.setFile(f);
+				SessionService.recordFilesStatic(getIntent().getData().getLastPathSegment());
+			}
+		}
+		else if(it.getAction().equals(Intent.ACTION_SEND)) {
+			intentProtoBuffer.setAction(IntentAction.ACTION_SEND);
+			Uri data = (Uri) it.getParcelableExtra(Intent.EXTRA_STREAM);
+			if(data != null && data.getScheme().equals("file")) {
+				SVMPProtocol.File.Builder f = SVMPProtocol.File.newBuilder();
+				f.setFilename(data.getLastPathSegment());
+				f.setData(getByteString(data));
+				intentProtoBuffer.setFile(f);
+				SessionService.recordFilesStatic(data.getLastPathSegment());
+			}
+		}
 
 		//Set the Request message params and send it off.
 		msg.setType(RequestType.INTENT);
-
-		if(getIntent().getData().getScheme().equals("file")) { // handle file forwarding
-			SVMPProtocol.File.Builder f = SVMPProtocol.File.newBuilder();
-			f.setFilename(getIntent().getData().getLastPathSegment());
-			f.setData(getByteString(getIntent().getData()));
-			intentProtoBuffer.setFile(f);
-			SessionService.recordFilesStatic(getIntent().getData().getLastPathSegment());
-		}
 
 		msg.setIntent(intentProtoBuffer.build());
 //		RemoteServerClient.sendMessage(msg.build());
