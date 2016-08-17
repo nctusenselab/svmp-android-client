@@ -34,7 +34,7 @@
 
         <!-- Allows for intercepting URL intents. -->
         <activity android:name=".SendNetIntent"
-                  android:label="@string/app_name"
+                  android:label="Forward to remote peer"
                   android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
                   android:screenOrientation="portrait">
             <intent-filter>
